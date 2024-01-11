@@ -1,73 +1,94 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Ghost Kitchen - File Sync
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> A console app that downloads menu and order files.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Vercel PKG](https://img.shields.io/badge/pkg-000?style=for-the-badge&logo=vercel&logoColor=white)
 
-## Description
+## Table of contents
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Ghost Kitchen - File Sync](#ghost-kitchen---file-sync)
+  - [Table of contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+    - [Tools](#tools)
+    - [Config](#config)
+  - [Usage](#usage)
+    - [Install dependencies](#install-dependencies)
+    - [Run in development mode](#run-in-development-mode)
+    - [Create executable file for Windows](#create-executable-file-for-windows)
+    - [Create executable file for macOS](#create-executable-file-for-macos)
+  - [File Download](#file-download)
+  - [AWS SQS](#aws-sqs)
+    - [`download-menu-file`](#download-menu-file)
+    - [`download-order-file`](#download-order-file)
 
-## Installation
+## Prerequisites
 
-```bash
-$ yarn install
+### Tools
+
+- Node.js _v18.19.0_
+- Yarn _1.22.19_
+
+### Config
+
+Create a copy of [`src/app/env.example.json`](src/app/env.example.json) named `env.json` and set the correct values. Alternatively, you can ask other contributors for the file.
+
+## Usage
+
+### Install dependencies
+
+```sh
+yarn # shorthand for `yarn install`
 ```
 
-## Running the app
+### Run in development mode
 
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```sh
+yarn start:dev
 ```
 
-## Test
+### Create executable file for Windows
 
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+```sh
+yarn pkg:win # Outputs `pkg/win.exe`
 ```
 
-## Support
+### Create executable file for macOS
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```sh
+yarn pkg:mac # Outputs `pkg/mac`
+```
 
-## Stay in touch
+## File Download
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Files will be saved under [`files`](files) folder.
 
-## License
+- Menu file - `files/menu.csv`
+- Order file - `files/orders/ORDER_1106.xml`
 
-Nest is [MIT licensed](LICENSE).
+## AWS SQS
+
+The following queues must be created in order for the app to run:
+
+### `download-menu-file`
+
+```json
+{
+  "url": "https://some-bucket.s3.us-west-2.amazonaws.com/gk-files/menu.csv",
+  "fileName": "menu.csv"
+}
+```
+
+### `download-order-file`
+
+```json
+{
+  "url": "https://some-bucket.s3.us-west-2.amazonaws.com/gk-files/ORDER_1106.xml",
+  "fileName": "ORDER_1106.xml"
+}
+```
+
+Also see: [`sqs-names.ts`](src/app/sqs-names.ts)
