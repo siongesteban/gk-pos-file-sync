@@ -44,5 +44,5 @@ lerna-debug.log*
 !.yarn/versions
 
 pkg
-
 env.json
+files

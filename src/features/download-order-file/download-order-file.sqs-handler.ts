@@ -12,14 +12,16 @@ export class DownloadOrderFileSqsHandler {
   @SqsMessageHandler(SqsNames.DOWNLOAD_ORDER_FILE)
   async handleMessage(message: Message) {
     const body = JSON.parse(message.Body);
-    await this.commandBus.execute(new DownloadOrderFileCommmand(body.url));
+    await this.commandBus.execute(
+      new DownloadOrderFileCommmand(body.url, body.fileName),
+    );
   }
 
   @SqsConsumerEventHandler(SqsNames.DOWNLOAD_ORDER_FILE, 'processing_error')
-  handleProcessingError(error: Error, message: Message) {
-    console.error(DownloadOrderFileSqsHandler.name, {
-      data: { error, message },
-    });
+  handleProcessingError(_, message: Message) {
+    console.error(
+      `Failed to download order file: ${JSON.parse(message.Body).fileName}.`,
+    );
   }
 
   @SqsConsumerEventHandler(SqsNames.DOWNLOAD_ORDER_FILE, 'error')

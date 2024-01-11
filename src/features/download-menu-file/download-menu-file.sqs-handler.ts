@@ -12,14 +12,16 @@ export class DownloadMenuFileSqsHandler {
   @SqsMessageHandler(SqsNames.DOWNLOAD_MENU_FILE)
   async handleMessage(message: Message) {
     const body = JSON.parse(message.Body);
-    await this.commandBus.execute(new DownloadMenuFileCommmand(body.url));
+    await this.commandBus.execute(
+      new DownloadMenuFileCommmand(body.url, body.fileName),
+    );
   }
 
   @SqsConsumerEventHandler(SqsNames.DOWNLOAD_MENU_FILE, 'processing_error')
-  handleProcessingError(error: Error, message: Message) {
-    console.error(DownloadMenuFileSqsHandler.name, {
-      data: { error, message },
-    });
+  handleProcessingError(_, message: Message) {
+    console.error(
+      `Failed to download menu file: ${JSON.parse(message.Body).fileName}.`,
+    );
   }
 
   @SqsConsumerEventHandler(SqsNames.DOWNLOAD_MENU_FILE, 'error')
