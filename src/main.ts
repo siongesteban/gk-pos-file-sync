@@ -12,7 +12,7 @@ async function bootstrap() {
     await app.listen(config.port);
     console.log('Ghost Kitchen - File Sync');
   } catch (error) {
-    console.error('Failed to start.');
+    console.error('Failed to start.', error);
     process.exit(1);
   }
 }
