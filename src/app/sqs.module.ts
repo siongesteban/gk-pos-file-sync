@@ -3,7 +3,6 @@ import { SqsModule as NestSqsModule } from '@ssut/nestjs-sqs';
 import { SQS } from '@aws-sdk/client-sqs';
 import { AppConfig, AppConfigToken } from './app.config';
 import { SqsNames } from './sqs-names';
-import { DownloadMenuFileSqsHandler } from './download-menu-file.sqs-handler';
 
 interface Queue {
   name: string;
@@ -36,6 +35,5 @@ interface Queue {
       },
     }),
   ],
-  providers: [DownloadMenuFileSqsHandler],
 })
 export class SqsModule {}
