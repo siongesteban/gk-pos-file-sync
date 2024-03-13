@@ -33,7 +33,10 @@ export class DownloadOrderFileHandler
 
     await downloadFile(url, filePath);
 
-    console.log('\nDownloaded order file:', fileName);
+    console.log(
+      `\n[${new Date().toLocaleString()}] Downloaded order file:`,
+      fileName,
+    );
     console.log(filePath);
   }
 }

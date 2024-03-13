@@ -21,7 +21,10 @@ export class DownloadMenuFileHandler
 
       await downloadFile(this.appConfig.menuFile.downloadUrl, filePath);
 
-      console.log('\nDownloaded menu file:', fileName);
+      console.log(
+        `\n[${new Date().toLocaleString()}] Downloaded menu file:`,
+        fileName,
+      );
       console.log(filePath);
     } catch (error) {
       if (error.code === 'EBUSY') {
