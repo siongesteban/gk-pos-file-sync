@@ -10,7 +10,7 @@ async function bootstrap() {
     const config = app.get<AppConfig>(AppConfigToken);
     await app.listen(config.port);
     console.clear();
-    console.log('Ghost Kitchen - File Sync');
+    console.log('Ghost Kitchen - POS File Sync');
     console.log('\nPress Ctrl+C to exit.');
   } catch (error) {
     console.error('Failed to start.', error);
