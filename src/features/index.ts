@@ -1,6 +1,6 @@
 import {
   DownloadMenuFileHandler,
-  DownloadMenuFileSqsHandler,
+  DownloadMenuFileSchedule,
 } from './download-menu-file';
 import {
   DownloadOrderFileHandler,
@@ -9,7 +9,6 @@ import {
 
 export const features = [DownloadMenuFileHandler, DownloadOrderFileHandler];
 
-export const sqsHandlers = [
-  DownloadMenuFileSqsHandler,
-  DownloadOrderFileSqsHandler,
-];
+export const sqsHandlers = [DownloadOrderFileSqsHandler];
+
+export const schedules = [DownloadMenuFileSchedule];

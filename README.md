@@ -21,8 +21,9 @@
     - [Create executable file for Windows](#create-executable-file-for-windows)
     - [Create executable file for macOS](#create-executable-file-for-macos)
   - [File Download](#file-download)
+    - [Menu](#menu)
+    - [Order](#order)
   - [AWS SQS](#aws-sqs)
-    - [`download-menu-file`](#download-menu-file)
     - [`download-order-file`](#download-order-file)
 
 ## Prerequisites
@@ -66,21 +67,19 @@ yarn pkg:mac # Outputs `pkg/mac`
 
 Files will be saved under [`files`](files) folder.
 
-- Menu file - `files/menu.csv`
-- Order file - `files/orders/ORDER_1106.xml`
+### Menu
+
+- `files/menu.csv`
+- Downloaded via a cron job. The file is redownloaded every minute.
+
+### Order
+
+- `files/orders/ORDER_1106.xml`
+- Downloaded via AWS SQS.
 
 ## AWS SQS
 
 The following queues must be created in order for the app to run:
-
-### `download-menu-file`
-
-```json
-{
-  "url": "https://some-bucket.s3.us-west-2.amazonaws.com/gk-files/menu.csv",
-  "fileName": "menu.csv"
-}
-```
 
 ### `download-order-file`
 

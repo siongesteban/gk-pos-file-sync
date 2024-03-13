@@ -14,13 +14,24 @@ export class DownloadMenuFileHandler
     private readonly appConfig: AppConfig,
   ) {}
 
-  async execute(command: DownloadMenuFileCommmand) {
-    const { url, fileName } = command;
-    const filePath = path.resolve(this.appConfig.downloadFolder, fileName);
+  async execute() {
+    try {
+      const fileName = this.appConfig.menuFile.name;
+      const filePath = path.resolve(this.appConfig.downloadFolder, fileName);
 
-    await downloadFile(url, filePath);
+      await downloadFile(this.appConfig.menuFile.downloadUrl, filePath);
 
-    console.log('\nDownloaded menu file:', fileName);
-    console.log(filePath);
+      console.log('\nDownloaded menu file:', fileName);
+      console.log(filePath);
+    } catch (error) {
+      if (error.code === 'EBUSY') {
+        console.log(
+          '\nMenu file could not be downloaded. Please make sure no other program is opening the file.',
+        );
+        return;
+      }
+
+      throw error;
+    }
   }
 }
