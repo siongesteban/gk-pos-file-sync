@@ -10,7 +10,7 @@ export const downloadFile = (url: string, savePath: string) =>
       }
 
       res.on('error', () => {
-        reject(new FileWriteError());
+        reject(new FileDownloadError());
       });
 
       const fileStream = fs.createWriteStream(savePath);
