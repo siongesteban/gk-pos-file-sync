@@ -34,7 +34,7 @@ export class DownloadOrderFileHandler
 
       await downloadFile(url, filePath);
 
-      log('Downloaded order file:', fileName, `${filePath}`);
+      log('Downloaded order file:', fileName, `\n${filePath}`);
     } catch (error) {
       if (error instanceof FileDownloadError) {
         log('Failed to download the order file.');
