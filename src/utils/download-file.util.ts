@@ -3,21 +3,39 @@ import https from 'node:https';
 
 export const downloadFile = (url: string, savePath: string) =>
   new Promise<void>((resolve, reject) => {
-    try {
-      https.get(url, (res) => {
-        const fileStream = fs.createWriteStream(savePath);
-        res.pipe(fileStream);
+    https.get(url, (res) => {
+      if (res.errored || res.statusCode !== 200) {
+        reject(new FileDownloadError());
+        return;
+      }
 
-        if (res.statusCode !== 200) {
-          reject(new Error('Could not download file.'));
-        }
-
-        fileStream.on('finish', () => {
-          fileStream.close();
-          resolve();
-        });
+      res.on('error', () => {
+        reject(new FileWriteError());
       });
-    } catch (error) {
-      reject(new Error('Failed to download file.'));
-    }
+
+      const fileStream = fs.createWriteStream(savePath);
+
+      fileStream.on('error', () => {
+        reject(new FileWriteError());
+      });
+
+      res.pipe(fileStream);
+
+      fileStream.on('finish', () => {
+        fileStream.close();
+        resolve();
+      });
+    });
   });
+
+export class FileDownloadError extends Error {
+  constructor() {
+    super('File could not be downloaded.');
+  }
+}
+
+export class FileWriteError extends Error {
+  constructor() {
+    super('File could not be saved.');
+  }
+}

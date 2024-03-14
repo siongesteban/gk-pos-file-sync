@@ -4,7 +4,7 @@ import path from 'node:path';
 import { Inject, OnModuleInit } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AppConfig, AppConfigToken } from '../../app';
-import { downloadFile } from '../../utils';
+import { FileDownloadError, downloadFile } from '../../utils';
 import { DownloadOrderFileCommmand } from './download-order-file.command';
 
 @CommandHandler(DownloadOrderFileCommmand)
@@ -28,15 +28,24 @@ export class DownloadOrderFileHandler
   }
 
   async execute(command: DownloadOrderFileCommmand) {
-    const { url, fileName } = command;
-    const filePath = path.resolve(this.folderPath, fileName);
+    try {
+      const { url, fileName } = command;
+      const filePath = path.resolve(this.folderPath, fileName);
 
-    await downloadFile(url, filePath);
+      await downloadFile(url, filePath);
 
-    console.log(
-      `\n[${new Date().toLocaleString()}] Downloaded order file:`,
-      fileName,
-    );
-    console.log(filePath);
+      console.log(
+        `\n[${new Date().toLocaleString()}] Downloaded order file:`,
+        fileName,
+      );
+      console.log(filePath);
+    } catch (error) {
+      if (error instanceof FileDownloadError) {
+        console.error('\nFailed to download the order file.');
+        return;
+      }
+
+      console.error('Something went wrong while downloading the order file.');
+    }
   }
 }
