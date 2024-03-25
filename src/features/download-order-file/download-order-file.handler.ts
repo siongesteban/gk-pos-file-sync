@@ -12,27 +12,34 @@ export class DownloadOrderFileHandler
   implements ICommandHandler<DownloadOrderFileCommmand>, OnModuleInit
 {
   private readonly folderPath: string;
+  private readonly archivePath: string;
 
   constructor(
     @Inject(AppConfigToken)
     private readonly appConfig: AppConfig,
   ) {
     this.folderPath = path.resolve(this.appConfig.downloadFolder, 'orders');
+    this.archivePath = path.resolve(this.appConfig.downloadFolder, 'archive');
   }
 
   async onModuleInit() {
     // Pre-create download path for the file.
-    if (!fs.existsSync(this.folderPath)) {
-      await fsPromises.mkdir(this.folderPath, { recursive: true });
-    }
+    await Promise.all([
+      fsPromises.mkdir(this.folderPath, { recursive: true }),
+      fsPromises.mkdir(this.archivePath, { recursive: true })
+  ]);
   }
 
   async execute(command: DownloadOrderFileCommmand) {
     try {
       const { url, fileName } = command;
       const filePath = path.resolve(this.folderPath, fileName);
-
-      await downloadFile(url, filePath);
+      const archivePath = path.resolve(this.archivePath, fileName);
+      
+      await Promise.all([
+        downloadFile(url, filePath),
+        downloadFile(url, archivePath)
+    ]);
 
       log('Downloaded order file:', fileName, `\n${filePath}`);
     } catch (error) {
@@ -41,7 +48,7 @@ export class DownloadOrderFileHandler
         return;
       }
 
-      log('Something went wrong while downloading the order file.');
+      log('Something went wrong while downloading the order file.', error);
     }
   }
 }
